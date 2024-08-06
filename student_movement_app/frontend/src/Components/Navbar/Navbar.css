@@ -1,0 +1,113 @@
+.container {
+    color: white;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 15%;
+    padding-right: 15%;
+    margin: 0;
+}
+
+.container ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 0;
+    margin: 0;
+}
+
+.container ul li {
+    padding: 0 15px;
+    font-size: 19px;
+    color: white;
+    list-style: none;
+    font-weight: 500;
+    cursor: pointer;
+
+}
+
+
+
+.container ul li:hover {
+    /* padding-bottom: 5px; */
+    color: aqua;
+    border-bottom: 1px solid red;
+    border-radius: 10px;
+    background: #212ea0;
+}
+
+/* .container ul li:not(:last-child) {
+    border-right: 2px solid whitesmoke;
+} */
+
+.menu-dots {
+    display: flex;
+}
+
+.dot {
+    width: 20px;
+    height: 20px;
+    background-color: #ebeaec;
+    border-radius: 50%;
+    margin: 0 3px;
+}
+.menu-icon{
+       display: none;
+    }
+
+
+@media (max-width: 840px) {
+    .container {
+        justify-content: space-between;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .container ul {
+        display: block;
+        position: fixed;
+        top: 0;
+        right: -200px;
+        bottom: 0;
+        background: #1629b9;
+        z-index: 1;
+        width: 200px;
+        padding-top: 70px;
+        transition: transform 0.5s ease, opacity 0.5s ease;
+        transform: translateX(0);
+        opacity: 0;
+        pointer-events: none; 
+    }
+
+    .container ul.show-mobile-menu {
+        transform: translateX(-200px);
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .container ul li {
+        margin: 25px 10px;
+        font-size: 17px;
+        cursor: pointer;
+        
+    }
+
+    .container ul li:not(:last-child) {
+        border-right: none;
+    }
+
+    .menu-icon {
+        display: block;
+        width: 30px;
+        cursor: pointer;
+        z-index: 1;
+    }
+
+    /* .menu-dots {
+        display: none;  
+    } */
+}

@@ -4,67 +4,20 @@ body {
     padding: 0;
 }
 
-.navbar {
+.home-page {
     height: 80vh;
     display: flex;
-    background: linear-gradient(rgba(8,0,58,0.7), rgba(8, 0, 58, 0.7)), url('../../assets/Images/big-phone.png');
+    background: linear-gradient(rgba(8, 0, 58, 0.7), rgba(8, 0, 58, 0.7)), url('../../assets/Images/big-phone.png');
     background-position: center;
     background-size: cover;
     justify-content: space-between;
-    background: white; 
-    border-radius: 25px; 
     margin-top: 45px;
     flex-direction: column;
     padding: 20px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     border-top: 2px solid white;
-    border-bottom:2px solid white;
+    border-bottom: 2px solid white;
     position: relative;
-}
-
-.container {
-    color: white;
-    font-weight: 600;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    padding-left: 15%;
-    padding-right: 15%;
-    margin: 0;
-}
-
-.container ul {
-    display: flex;
-    align-items: center;
-    list-style: none;
-    text-transform: uppercase;
-    font-weight: 500;
-    padding: 0;
-    margin: 0;
-}
-
-.container ul li {
-    padding: 0 15px;
-    font-size: 19px;
-    
-}
-
-.container ul li:not(:last-child) {
-    border-right: 2px solid whitesmoke;
-}
-
-.menu-dots {
-    display: flex;
-}
-
-.dot {
-    width: 20px;
-    height: 20px;
-    background-color: #ebeaec;
-    border-radius: 50%;
-    margin: 0 3px;
 }
 
 hr {
@@ -74,7 +27,7 @@ hr {
     position: absolute;
     left: 0;
     top: 60px;
-    width:100%;
+    width: 100%;
 }
 
 .hero {
@@ -92,17 +45,26 @@ hr {
     flex: 1;
 }
 
+.text-content .full-text {
+    display: block;
+}
+
+.text-content .truncated-text {
+    display: none;
+}
+
 h1 {
     font-size: 4vw;
-    color: #8c52ff;
-    margin-bottom: 20px;
-    line-height: 1.2;
+    color: white;
+    margin-bottom: 25px;
+    line-height: 1.1;
 }
 
 p {
-    font-size: 18px;
+    font-size: 20px;
     margin-bottom: 20px;
     color: whitesmoke;
+    font-weight: 600;
 }
 
 .explore-btn {
@@ -111,7 +73,7 @@ p {
     background-color: #f3d9ff;
     color: #333;
     padding: 10px 20px;
-    border-radius: 25px;
+    border-radius: 20px;
     text-decoration: none;
     font-weight: bold;
 }
@@ -136,15 +98,38 @@ p {
 }
 
 @media (max-width: 768px) {
-    .content {
-        flex-direction: column;
+    .home-page {
+        margin-top: 0;
+        border-top: none;
     }
-    
-    h1 {
-        font-size: 8vw;
+
+    .hero {
+        padding: 0;
+
     }
-    
-    .image-content {
-        margin-top: 20px;
+
+    .text-content .full-text {
+        display: none;
     }
-} 
+
+    .text-content .truncated-text {
+        display: block;
+    }
+
+.content {
+    flex-direction: column;
+}
+
+h1 {
+    font-size: 5vw;
+}
+
+p {
+    font-size: 19px;
+}
+
+.image-content {
+    margin-top: 20px;
+}
+
+}

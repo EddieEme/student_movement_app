@@ -1,19 +1,25 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
+.page-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: whitesmoke;
+
+}
+
+.nav-container {
+  width: 100%;
+  background-color: #6c5ce7;
+  padding-top: 13px;
+  padding-bottom: 17px;
 }
 
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  flex: 1;
+  padding: 20px;
+  /* height: 100vh; */
 }
 
 .login-card {
@@ -21,7 +27,8 @@ body {
   border-radius: 20px;
   padding: 30px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  width: 100%;
+  max-width: 400px;
 }
 
 .login-title {
