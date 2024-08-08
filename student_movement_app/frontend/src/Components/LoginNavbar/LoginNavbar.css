@@ -1,0 +1,51 @@
+.login-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    background-color: white;
+    box-shadow: 0 3px 7px rgba(0,0,0,0.1);
+}
+
+.login-img {
+    display: flex;
+    align-items: center;
+}
+.login-img .user-name{
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.login-img > * + * {
+    margin-left: 0.5rem;
+}
+.rounded-full{
+    width: 80px;
+    border-radius: 50%;
+}
+.user-image{
+    width: 38px;
+    border-radius: 50%;
+}
+.bell{
+    position: relative;
+}
+
+.notification-count {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    background-color: #EF4444;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 9999px;
+    height: 1.25rem;
+    width: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

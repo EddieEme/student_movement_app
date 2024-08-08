@@ -1,0 +1,47 @@
+.side-nav{
+    height: 100vh;
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+    background-color: aliceblue;
+}
+
+.side-nav ul{
+    display: flex;
+    flex-direction: column;
+    padding-top: 2rem;
+    padding-right: 2rem;
+    /* align-items: center; */
+}
+.side-nav ul li{
+    padding: 10px 10px 10px 0;   
+    
+}
+.icon-box{
+    display: flex;
+    margin:1rem 0 ;
+    background-color: blue;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 10px;
+}
+
+.icons{
+    width: 38px;
+    padding: 10px;
+}
+
+@media (max-width: 1024px){
+    .icons{
+    /* width: 2px; */
+    padding: 0;
+    
+}
+.side-nav ul li{
+    display: none;  
+
+}
+
+
+
+}
