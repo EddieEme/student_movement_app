@@ -10,7 +10,7 @@ const LoginNavbar = () => {
         <nav className='login-nav'>
             <div className="login-img">
                 <img src={sms_logo} alt="Logo" className="rounded-full" />
-                
+
             </div>
             <div className='login-img'>
                 <div className="bell">
@@ -20,10 +20,19 @@ const LoginNavbar = () => {
                         {messageCount > 0 && (<span className="msg-number"> {messageCount} </span>)}
                     </div>
                 </div>
+                <div className='user-details'>
                 <img src={user_image} alt="User" className="user-image" />
                 <span className='user-name'>Edison</span>
+                <div className="logout">
+                    <ul>
+                        <li>Logout</li>
+                    </ul>
+                </div>
 
+                </div>
+              
             </div>
+
 
 
         </nav>
