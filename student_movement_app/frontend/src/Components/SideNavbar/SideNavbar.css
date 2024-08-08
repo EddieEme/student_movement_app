@@ -21,7 +21,7 @@
 .icon-box{
     display: flex;
     margin:1rem 0 ;
-    background-color: blue;
+    /* background-color: blue;  */
     align-items: center;
     gap: 3px;
     border-radius: 10px;

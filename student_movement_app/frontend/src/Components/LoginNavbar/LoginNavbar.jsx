@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './LoginNavbar.css'
 import sms_logo from '../../assets/Images/sms-logo.png'
 import user_image from '../../assets/Images/user-image.png'
 import { Bell } from 'lucide-react'
 
 const LoginNavbar = () => {
+    const [logout, setLogout] = useState(false)
+    const toggleLogout = () => {
+        setLogout(!logout)
+    }
     const messageCount = 5;
     return (
         <nav className='login-nav'>
@@ -20,10 +24,10 @@ const LoginNavbar = () => {
                         {messageCount > 0 && (<span className="msg-number"> {messageCount} </span>)}
                     </div>
                 </div>
-                <div className='user-details'>
+                <div className='user-details' onClick={toggleLogout}>
                 <img src={user_image} alt="User" className="user-image" />
                 <span className='user-name'>Edison</span>
-                <div className="logout">
+                <div className={`logout ${logout ? 'show-logout' : ''}`}>
                     <ul>
                         <li>Logout</li>
                     </ul>
