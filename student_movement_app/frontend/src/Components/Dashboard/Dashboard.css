@@ -1,7 +1,14 @@
+/* body {
+    background: white;
+    margin: 0;
+    padding: 0;
+} */
+
 .dashboard {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  background: whitesmoke;
 }
 
 /* .login-navbar {
@@ -17,6 +24,7 @@
 .main-content {
   flex: 1;
   transition: margin-left 0.3s ease-in-out;
+  
 }
 
 /* .main-content.sidenav-visible {
@@ -28,14 +36,13 @@
 }  */
 
 .main-content {
-    margin-left: 0;
-    transition: margin-left 0.3s ease-in-out;
-    display:block;
-    height: 100%;
+  flex: 1;
+  overflow-y: auto;
+  
 }
 
 .main-content.sidenav-visible {
-    margin-left: 15%; /* Should match the width of your sidenav */
+    margin-left: 15%; 
 }
 
 @media (max-width: 1440px) {

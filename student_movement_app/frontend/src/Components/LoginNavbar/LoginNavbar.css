@@ -65,6 +65,7 @@
     width: 62px;
     height: 52px;
     background: white;
+    z-index: 1;
 }
 .logout.show-logout {
     display: block;
