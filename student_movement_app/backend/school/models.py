@@ -18,7 +18,23 @@ class School(models.Model):
     address = models.CharField(max_length=225)
     year_establishment = models.IntegerField()
     location = models.CharField(max_length=10)
-    
+    type_of_school = models.CharField(max_length=15, null=True)
+    school_level = models.CharField(max_length=10, null=True)
+
     def __str__(self):
         return f"{self.school_code} ({self.school_name} {self.state})"
+    
+    
+class Student(models.Model):
+    school = models.ForeignKey(School, on_delete=models.CASCADE)  # Updated field name
+    student_name = models.CharField(max_length=225)
+    date_of_birth = models.DateField()
+    state_of_origin = models.CharField(max_length=25)
+    lga_of_origin = models.CharField(max_length=30)
+    town = models.CharField(max_length=225)
+    student_class = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"{self.student_name} ({self.school.school_name})"
+
     

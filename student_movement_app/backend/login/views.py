@@ -1,9 +1,13 @@
+from django.forms import ValidationError
 from rest_framework.response import Response
-from rest_framework import status, generics
+from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import RefreshToken
+from login.models import User
+from django.contrib.auth import get_user_model
+from rest_framework.authtoken.models import Token 
 from school.models import School
 from .serializers import UserSerializer
 
@@ -36,12 +40,36 @@ def login_view(request):
     else:
         return Response({'error': 'Invalid school code or password.'}, status=status.HTTP_400_BAD_REQUEST)
 
-class SchoolUserRegistrationView(generics.CreateAPIView):
-    serializer_class = UserSerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            self.perform_create(serializer)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+User = get_user_model()
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register_view(request):
+    data = request.data
+    
+    required_fields = ['school_code', 'password', 'email']
+    for field in required_fields:
+        if field not in data:
+            return Response({'error': f'{field} is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        school = School.objects.get(school_code=data['school_code'])
+    except School.DoesNotExist:
+        return Response({'error': 'Invalid school code.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if User.objects.filter(username=data['school_code']).exists():
+        return Response({'error': 'A user for this school already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = User.objects.create_user(
+        username=data['school_code'],
+        email=data['email'],
+        password=data['password'],
+    )
+
+    # Set user as staff to access admin panel
+    user.is_staff = True
+    
+    user.save()
+
+    return Response({'message': 'User registered successfully.'}, status=status.HTTP_201_CREATED)
