@@ -14,7 +14,7 @@ const Home = () => {
 
     <div className="home-page">
       <Navbar />
-      <hr />
+      <div className='header-divider'></div>
       <div className='hero'>
         <div className="text-content">
           <h1>STUDENTS MOVEMENT APPLICATION</h1>
@@ -26,7 +26,6 @@ const Home = () => {
           </a></Link>
         </div>
       </div>
-
     </div>
   )
 }

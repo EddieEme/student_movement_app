@@ -20,8 +20,7 @@ const Navbar = () => {
                 </div>
                 <ul className={mobileMenu ? 'show-mobile-menu' : ''}>
                     <li><Link to='/' className='link'>Home</Link></li>
-                    <li>Services</li>
-                    <li>Products</li>
+                    <li><Link to='/about' className='link'>About</Link></li>
                     <li><Link to='/login' className='link'>Login</Link></li>
                 </ul>
                

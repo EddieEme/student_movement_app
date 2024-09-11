@@ -60,7 +60,7 @@ label {
   color: #333;
 }
 
-input {
+input, select{
   width: 100%;
   padding: 10px;
   border: none;
@@ -68,7 +68,7 @@ input {
   font-size: 16px;
 }
 
-input:focus {
+input, select:focus {
   outline: none;
   border-bottom-color: #6c5ce7;
 }

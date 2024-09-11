@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Row, Col, Container } from 'react-bootstrap';
+import { Card, Row, Col, Container, Table } from 'react-bootstrap';
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, CartesianGrid, Legend, Line } from 'recharts';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -36,6 +36,14 @@ const SummaryCard = ({ label, value }) => (
   </Card>
 );
 
+const studentData = [
+  { id: 1, name: 'John Doe', status: 'Active', date: '2024-08-12' },
+  { id: 2, name: 'Jane Smith', status: 'Inactive', date: '2024-08-11' },
+  { id: 3, name: 'Jane Smith', status: 'Inactive', date: '2024-08-11' },
+  { id: 4, name: 'Jane Smith', status: 'Inactive', date: '2024-08-11' },
+  { id: 5, name: 'Jane Smith', status: 'Inactive', date: '2024-08-11' },
+  // Add more student data as needed
+];
 const ChartCard = ({ children }) => (
   <Card className="shadow-sm h-100">
     <Card.Body>{children}</Card.Body>
@@ -117,6 +125,31 @@ const Chart = () => {
             </ResponsiveContainer>
           </ChartCard>
         </Col>
+      </Row>
+
+      <Row className="mb-4 mt-3 px-2 ">
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>S/N</th>
+              <th>Student</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {studentData.map((student) => (
+              <tr key={student.id}>
+                <td>{student.id}</td>
+                <td>{student.name}</td>
+                <td>{student.status}</td>
+                <td>{student.date}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+
+
       </Row>
     </Container>
   );
