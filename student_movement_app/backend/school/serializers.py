@@ -9,6 +9,7 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
+    school = serializers.SlugRelatedField(slug_field='school_code', queryset=School.objects.all())
     class Meta:
         model = Student
-        fields = '__all__'
+        fields = ['student_id', 'student_name', 'date_of_birth', 'state_of_origin', 'lga_of_origin', 'town', 'student_class', 'school']

@@ -1,33 +1,44 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
+from .models import UserProfile
 
-class CustomUserAdmin(UserAdmin):
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active', 'is_superuser', 'get_school')
-    list_filter = ('is_staff', 'is_active', 'is_superuser', 'school__school_name')
+User = get_user_model()
+
+# Unregister the default User admin
+admin.site.unregister(User)
+
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
+    can_delete = False
+    verbose_name_plural = 'Profile'
+    fk_name = 'user'
+
+class UserAdmin(BaseUserAdmin):
+    inlines = (UserProfileInline,)
+
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'email')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('School', {'fields': ('school',)}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
+
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'is_staff', 'is_active', 'is_superuser', 'school',)}
-        ),
+            'fields': ('username', 'password1', 'password2', 'email'),
+        }),
     )
-    search_fields = ('username', 'email', 'school__school_name')
+
+    list_display = ('username', 'email', 'is_staff', 'is_superuser')
+    search_fields = ('username', 'email')
     ordering = ('username',)
 
-    def get_school(self, obj):
-        return obj.school.school_name if obj.school else 'N/A'
-    get_school.short_description = 'School'
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'school')
+    search_fields = ('user__username', 'school__school_name')
 
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if request.user.is_superuser:
-            return qs
-        return qs.filter(school=request.user.school)
-
-admin.site.register(User, CustomUserAdmin)
+admin.site.register(User, UserAdmin)
+admin.site.register(UserProfile, UserProfileAdmin)

@@ -43,7 +43,20 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'login',
     'school',
+    "corsheaders",
 ]
+
+# For development (allow all origins):
+CORS_ALLOW_ALL_ORIGINS = True
+
+# For production (specify allowed origins):
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",
+#     "http://127.0.0.1:5173",
+# ]
+
+# If you need to allow credentials (cookies, authorization headers)
+CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -62,6 +75,7 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -119,12 +133,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# AUTH_USER_MODEL = 'login.User'
 
 AUTHENTICATION_BACKENDS = [
-    'login.models.SchoolCodeBackend',
+   'login.auth_backends.SchoolCodeBackend',
     'django.contrib.auth.backends.ModelBackend',
- 
 ]
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

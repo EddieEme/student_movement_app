@@ -26,7 +26,8 @@ class School(models.Model):
     
     
 class Student(models.Model):
-    school = models.ForeignKey(School, on_delete=models.CASCADE)  # Updated field name
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    student_id = models.CharField(max_length=15, unique=True)
     student_name = models.CharField(max_length=225)
     date_of_birth = models.DateField()
     state_of_origin = models.CharField(max_length=25)
