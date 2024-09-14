@@ -1,7 +1,8 @@
 import React from "react"
 import Login from "./Components/Login/Login"
 import Home from "./Components/Home/Home"
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+// import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from "./Components/Dashboard/Dashboard"
 import AddStudent from "./Components/AddStudent/AddStudent"
 import Transfer from "./Components/Transfer/Transfer"
