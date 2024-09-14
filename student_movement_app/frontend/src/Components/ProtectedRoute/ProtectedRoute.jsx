@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from 'react';
+import { useNavigate, Outlet } from 'react-router-dom';
 
-function ProtectedRoute({ children }) {
+function ProtectedRoute() {
     const navigate = useNavigate();
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(null); // null means loading
 
     useEffect(() => {
         const checkAuth = () => {
@@ -18,12 +18,15 @@ function ProtectedRoute({ children }) {
         checkAuth();
     }, [navigate]);
 
-    if (!isAuthenticated) {
-        return <div>Loading...</div>; // Show a loading state instead of a blank page
+    if (isAuthenticated === null) {
+        return <div>Loading...</div>; // Show a loading state while checking authentication
     }
 
-    return children;
-}
+    if (!isAuthenticated) {
+        return null; // Return nothing if not authenticated (redirects already handled)
+    }
 
+    return <Outlet />; // Render child routes
+}
 
 export default ProtectedRoute;
