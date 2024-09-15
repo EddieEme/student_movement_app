@@ -8,6 +8,7 @@
 .footer-content {
   max-width: 800px;
   margin: 0 auto;
+  
 }
 
 .footer-social-media {
@@ -43,4 +44,13 @@
 
 .footer-link:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .footer-content p{
+      font-size: 15px;
+}
+.footer-social-media h4{
+   font-size: 17px;
+}
 }
