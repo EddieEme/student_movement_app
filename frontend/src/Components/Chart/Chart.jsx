@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Container, Table } from 'react-bootstrap';
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, CartesianGrid, Legend, Line } from 'recharts';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const summaryData = [
-  { summaryLabel: 'Total', value: 78000 },
-  { summaryLabel: 'Transfer In', value: 800000 },
-  { summaryLabel: 'Transfer Out', value: 150000 },
-];
+const SummaryCard = ({ label, value }) => (
+  <Card className="shadow-sm bg-primary text-white h-100">
+    <Card.Body>
+      <Card.Title className="fs-4 fw-medium">{label}</Card.Title>
+      <Card.Text className="h3">{value.toLocaleString()}</Card.Text>
+    </Card.Body>
+  </Card>
+);
 
-const pieData = [
-  { summaryLabel: 'Transfer In', value: 800000 },
-  { summaryLabel: 'Transfer Out', value: 150000 },
-];
+const ChartCard = ({ children }) => (
+  <Card className="shadow-sm h-100">
+    <Card.Body>{children}</Card.Body>
+  </Card>
+);
 
 const monthlyData = [
   { name: 'Jan', transferredIn: 20, transferredOut: 15 },
@@ -27,30 +31,62 @@ const yearlyTrend = [
   { year: '2024', transferredIn: 325, transferredOut: 250 },
 ];
 
-const SummaryCard = ({ label, value }) => (
-  <Card className="shadow-sm bg-primary text-white h-100">
-    <Card.Body>
-      <Card.Title className="fs-4 fw-medium">{label}</Card.Title>
-      <Card.Text className="h3">{value.toLocaleString()}</Card.Text>
-    </Card.Body>
-  </Card>
-);
-
-const studentData = [
-  { id: 1, name: 'John Doe', status: 'Active', date: '2024-08-12' },
-  { id: 2, name: 'Jane Smith', status: 'Inactive', date: '2024-08-11' },
-  { id: 3, name: 'Jane Smith', status: 'Inactive', date: '2024-08-11' },
-  { id: 4, name: 'Jane Smith', status: 'Inactive', date: '2024-08-11' },
-  { id: 5, name: 'Jane Smith', status: 'Inactive', date: '2024-08-11' },
-  // Add more student data as needed
-];
-const ChartCard = ({ children }) => (
-  <Card className="shadow-sm h-100">
-    <Card.Body>{children}</Card.Body>
-  </Card>
-);
-
 const Chart = () => {
+
+
+  const [statistics, setStatistics] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [studentData, setStudentData] = useState([]);  // State to hold the student list
+
+  useEffect(() => {
+    // Fetch JWT token from local storage
+    const token = localStorage.getItem('accessToken');
+    const apiUrl = `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_STATISTICS_ENDPOINT}`;
+    // Make the API call
+    fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // Pass the token in the Authorization header
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch school statistics');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setStatistics(data);
+        setStudentData(data.students_list);  // Set the student list from the API response
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
+  const summaryData = [
+    { summaryLabel: 'Total', value: statistics.total_students || 0 },
+    { summaryLabel: 'Transfer In', value: statistics.transferred_in || 0 },
+    { summaryLabel: 'Transfer Out', value: statistics.transferred_out || 0 },
+  ];
+
+  const pieData = [
+    { summaryLabel: 'Transfer In', value: statistics.transferred_in || 0 },
+    { summaryLabel: 'Transfer Out', value: statistics.transferred_out || 0 },
+  ];
+
   return (
     <Container fluid className="chart py-4">
       <Row className="g-4 mb-4">
@@ -112,22 +148,9 @@ const Chart = () => {
             </ResponsiveContainer>
           </ChartCard>
         </Col>
-        <Col xs={12} lg={6}>
-          <ChartCard>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={monthlyData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="transferredIn" fill="#8884d8" name="Transferred In" />
-                <Bar dataKey="transferredOut" fill="#82ca9d" name="Transferred Out" />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartCard>
-        </Col>
       </Row>
 
-      <Row className="mb-4 mt-3 px-2 ">
+      <Row className="mb-4 mt-3 px-2">
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -138,18 +161,16 @@ const Chart = () => {
             </tr>
           </thead>
           <tbody>
-            {studentData.map((student) => (
-              <tr key={student.id}>
-                <td>{student.id}</td>
-                <td>{student.name}</td>
-                <td>{student.status}</td>
-                <td>{student.date}</td>
+            {studentData.map((student, index) => (
+              <tr key={index}>
+                <td>{index + 1}</td>  {/* Adding S/N dynamically */}
+                <td>{student.student_name}</td>
+                <td>{student.state_of_origin}</td>
+                <td>{student.student_class}</td>
               </tr>
             ))}
           </tbody>
         </Table>
-
-
       </Row>
     </Container>
   );

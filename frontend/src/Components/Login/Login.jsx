@@ -15,9 +15,6 @@ const Login = () => {
         e.preventDefault();
         setError(''); // Clear any previous errors
         try {
-            console.log('Attempting login with:', { username, password });
-            console.log('API URL:', `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_LOGIN_ENDPOINT}`);
-
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_LOGIN_ENDPOINT}`,
                 { username, password }

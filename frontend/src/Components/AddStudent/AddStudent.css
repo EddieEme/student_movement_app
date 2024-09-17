@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: rgb(55, 27, 214);
+  background: whitesmoke;
 }
 
 .addstudent-content {
@@ -20,7 +20,7 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-    padding-top: 110px;
+    padding-top: 37px;
 }
 .login-card {
   background-color: white;
@@ -51,7 +51,7 @@
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 
 label {
