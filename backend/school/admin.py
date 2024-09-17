@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import School, Student
+from .models import School, Student, Transfer
 
 @admin.register(School)
 class SchoolAdmin(admin.ModelAdmin):
@@ -8,3 +8,9 @@ class SchoolAdmin(admin.ModelAdmin):
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('student_name', 'school', 'date_of_birth', 'state_of_origin', 'lga_of_origin', 'town', 'student_class')
+
+@admin.register(Transfer)
+class TransferAdmin(admin.ModelAdmin):
+    list_display = ('student', 'from_school', 'to_school', 'status')
+    fields = ('student', 'from_school', 'to_school', 'status', 'approval_date')
+    readonly_fields = ('request_date',)

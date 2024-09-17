@@ -1,9 +1,7 @@
 from django.contrib.auth.backends import BaseBackend
 from school.models import School
-
-from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import User
-from school.models import School
+
 
 class SchoolCodeBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):

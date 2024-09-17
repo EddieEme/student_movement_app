@@ -16,8 +16,6 @@ class UserProfile(models.Model):
 
    
 
-
-
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
@@ -28,6 +26,7 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
         # If the user already has a profile, ensure it's updated
         if hasattr(instance, 'profile'):
             instance.profile.save()
+            
 
 
 # class User(AbstractUser):
