@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const Login = () => {
 
-    const [school_code, setSchool_code] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -15,12 +15,12 @@ const Login = () => {
         e.preventDefault();
         setError(''); // Clear any previous errors
         try {
-            console.log('Attempting login with:', { school_code, password });
+            console.log('Attempting login with:', { username, password });
             console.log('API URL:', `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_LOGIN_ENDPOINT}`);
 
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_LOGIN_ENDPOINT}`,
-                { school_code, password }
+                { username, password }
             );
 
             console.log('Login response:', response.data);
@@ -62,13 +62,13 @@ const Login = () => {
                     {error && <div className="error-message">{error}</div>}
                     <form onSubmit={handleSubmit} className="login-form">
                         <div className="form-group">
-                            <label htmlFor="school_code">school code</label>
+                            <label htmlFor="username">Username</label>
                             <input
                                 type="text"
-                                id="school_code"
-                                name="school_code"
-                                value={school_code}
-                                onChange={(e) => setSchool_code(e.target.value)}
+                                id="username"
+                                name="username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                                 required
                             />
                         </div>
