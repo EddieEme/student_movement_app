@@ -3,11 +3,16 @@ import './LoginNavbar.css'
 import sms_logo from '../../assets/Images/sms-logo.png'
 import user_image from '../../assets/Images/user-image.png'
 import { Bell } from 'lucide-react'
+import { logout } from '../Logout'
 
 const LoginNavbar = () => {
-    const [logout, setLogout] = useState(false)
+    const [logoutVisible, setLogoutVisible] = useState(false)
     const toggleLogout = () => {
-        setLogout(!logout)
+        setLogoutVisible(!logoutVisible)
+    };
+
+    const handleLogout = () => {
+        logout() //call the logout function
     }
     const messageCount = 5;
     return (
@@ -27,8 +32,8 @@ const LoginNavbar = () => {
                 <div className='user-details' onClick={toggleLogout}>
                 <img src={user_image} alt="User" className="user-image" />
                 <span className='user-name'>Edison</span>
-                <div className={`logout ${logout ? 'show-logout' : ''}`}>
-                    <ul>
+                <div className={`logout ${logoutVisible ? 'show-logout' : ''}`}>
+                    <ul onClick={handleLogout}>
                         <li>Logout</li>
                     </ul>
                 </div>

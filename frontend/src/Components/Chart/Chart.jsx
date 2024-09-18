@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Card, Row, Col, Container, Table } from 'react-bootstrap';
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, CartesianGrid, Legend, Line } from 'recharts';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -18,6 +18,20 @@ const ChartCard = ({ children }) => (
   </Card>
 );
 
+// Static mock data for demonstration purposes
+const mockStatistics = {
+  total_students: 150,
+  transferred_in: 50,
+  transferred_out: 25,
+  students_list: [
+    { student_name: 'John Doe', state_of_origin: 'Lagos', student_class: 'SS1' },
+    { student_name: 'Jane Smith', state_of_origin: 'Abuja', student_class: 'SS2' },
+    { student_name: 'Michael Johnson', state_of_origin: 'Kano', student_class: 'SS3' },
+    { student_name: 'Alice Brown', state_of_origin: 'Kaduna', student_class: 'SS1' },
+    { student_name: 'Bob White', state_of_origin: 'Lagos', student_class: 'SS2' },
+  ],
+};
+
 const monthlyData = [
   { name: 'Jan', transferredIn: 20, transferredOut: 15 },
   { name: 'Feb', transferredIn: 25, transferredOut: 20 },
@@ -31,50 +45,32 @@ const yearlyTrend = [
   { year: '2024', transferredIn: 325, transferredOut: 250 },
 ];
 
+// Function to aggregate students by class
+const aggregateStudentsByClass = (students) => {
+  const classCounts = {};
+
+  students.forEach((student) => {
+    const studentClass = student.student_class;
+    if (classCounts[studentClass]) {
+      classCounts[studentClass] += 1;
+    } else {
+      classCounts[studentClass] = 1;
+    }
+  });
+
+  return Object.keys(classCounts).map((studentClass) => ({
+    className: studentClass,
+    count: classCounts[studentClass],
+  }));
+};
+
 const Chart = () => {
+  // Use static mock data
+  const statistics = mockStatistics;
+  const studentData = statistics.students_list;
 
-
-  const [statistics, setStatistics] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [studentData, setStudentData] = useState([]);  // State to hold the student list
-
-  useEffect(() => {
-    // Fetch JWT token from local storage
-    const token = localStorage.getItem('accessToken');
-    const apiUrl = `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_STATISTICS_ENDPOINT}`;
-    // Make the API call
-    fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Pass the token in the Authorization header
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch school statistics');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setStatistics(data);
-        setStudentData(data.students_list);  // Set the student list from the API response
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error.message);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
+  // Aggregated student count by class
+  const studentClassData = aggregateStudentsByClass(studentData);
 
   const summaryData = [
     { summaryLabel: 'Total', value: statistics.total_students || 0 },
@@ -148,6 +144,19 @@ const Chart = () => {
             </ResponsiveContainer>
           </ChartCard>
         </Col>
+
+        <Col xs={12} lg={6}>
+          <ChartCard>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={studentClassData}>
+                <XAxis dataKey="className" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="count" fill="#8884d8" name="Number of Students" />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </Col>
       </Row>
 
       <Row className="mb-4 mt-3 px-2">
@@ -156,8 +165,8 @@ const Chart = () => {
             <tr>
               <th>S/N</th>
               <th>Student</th>
-              <th>Status</th>
-              <th>Date</th>
+              <th>State of Origin</th>
+              <th>Class</th>
             </tr>
           </thead>
           <tbody>
