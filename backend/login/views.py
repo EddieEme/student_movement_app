@@ -4,58 +4,12 @@ from django.contrib.auth import authenticate, get_user_model
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from login.models import UserProfile
 from login.serializers import UserSerializer
 from school.models import School
 
 
-
 User = get_user_model()
-
-# @api_view(['POST'])
-# @permission_classes([AllowAny])
-# def login_view(request):
-#     school_code = request.data.get('school_code')
-#     password = request.data.get('password')
-    
-#     if not school_code or not password:
-#         return Response({'error': 'Both school code and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
-
-#     # Authenticate using the custom SchoolCodeBackend
-#     user = authenticate(request, username=school_code, password=password)
-
-#     if user is not None:
-#         try:
-#             # Find the school by school_code
-#             school = School.objects.get(school_code=school_code)
-            
-#             # Find the UserProfile associated with this user
-#             user_profile = UserProfile.objects.get(user=user)
-            
-#             # Check if the user's profile is associated with the correct school
-#             if user_profile.school != school:
-#                 return Response({'error': 'User is not associated with the provided school code.'}, status=status.HTTP_400_BAD_REQUEST)
-
-#             # JWT token generation
-#             refresh = RefreshToken.for_user(user)
-#             return Response({
-#                 'refresh': str(refresh),
-#                 'access': str(refresh.access_token),
-#                 'user': {
-#                     'username': user.username,
-#                     'school': school.school_name,
-#                     'school_code': school.school_code
-#                 }
-#             }, status=status.HTTP_200_OK)
-        
-#         except School.DoesNotExist:
-#             return Response({'error': 'School with this code does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
-#         except UserProfile.DoesNotExist:
-#             return Response({'error': 'User profile does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
-#     else:
-#         return Response({'error': 'Invalid school code or password.'}, status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -66,20 +20,15 @@ def login_view(request):
     if not username or not password:
         return Response({'error': 'Both username and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Authenticate using Django's standard authentication system
     user = authenticate(request, username=username, password=password)
 
     if user is not None:
         try:
-            # Find the UserProfile associated with this user
             user_profile = UserProfile.objects.get(user=user)
-            
-            # Find the school associated with the user's profile
             school = user_profile.school
             
-            # JWT token generation
             refresh = RefreshToken.for_user(user)
-            return Response({
+            response = Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
                 'user': {
@@ -88,17 +37,75 @@ def login_view(request):
                     'school_code': school.school_code if school else 'No Code'
                 }
             }, status=status.HTTP_200_OK)
+            
+            # Set the JWT as a cookie
+            response.set_cookie(
+                key='access_token',
+                value=str(refresh.access_token),
+                httponly=True,  # Makes the cookie inaccessible to JavaScript
+                samesite='Lax',  # Provides some CSRF protection
+                secure=True,  # Only send cookie over HTTPS
+                max_age=3600  # Cookie expiration time in seconds
+            )
+            
+            return response
         
         except UserProfile.DoesNotExist:
             return Response({'error': 'User profile does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response({'error': 'Invalid username or password.'}, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['POST'])
+def logout_view(request):
+    try:
+        # Extract the refresh token from the request
+        token = request.data.get('refresh_token')
+        if token:
+            # Blacklist the refresh token (or any other logic to invalidate it)
+            try:
+                refresh_token = RefreshToken(token)
+                refresh_token.blacklist()
+            except Exception as e:
+                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'message': 'Logged out successfully.'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+from django.db import IntegrityError
+from rest_framework.exceptions import ValidationError
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_view(request):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response({'message': 'User registered successfully.'}, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    username = request.data.get('username')
+    password = request.data.get('password')
+    email = request.data.get('email')
+    school_code = request.data.get('school_code')
+    is_staff = request.data.get('is_staff', False)
+    
+    if not username or not password or not email or not school_code:
+        return Response({'error': 'All fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        # Check if school exists
+        school = School.objects.get(school_code=school_code)
+        
+        # Ensure only one user per school
+        if UserProfile.objects.filter(school=school).exists():
+            return Response({'error': 'A user already exists for this school.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Create new user
+        user = User.objects.create_user(username=username, password=password, email=email, is_staff=is_staff)
+        
+        # Create user profile linked to school
+        UserProfile.objects.create(user=user, school=school)
+        
+        return Response({'message': 'User registered successfully!'}, status=status.HTTP_201_CREATED)
+    
+    except School.DoesNotExist:
+        return Response({'error': 'Invalid school code.'}, status=status.HTTP_400_BAD_REQUEST)
+    except IntegrityError:
+        return Response({'error': 'A user with this email or username already exists.'}, status=status.HTTP_400_BAD_REQUEST)

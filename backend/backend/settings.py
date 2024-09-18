@@ -144,9 +144,18 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 AUTHENTICATION_BACKENDS = [
-   'login.auth_backends.SchoolCodeBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 

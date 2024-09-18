@@ -33,3 +33,9 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = ['user', 'message', 'is_read', 'created_at']
+
+
+class SchoolStatisticsSerializer(serializers.Serializer):
+    total_students = serializers.IntegerField()
+    students_list = StudentSerializer(many=True)
+    school_name = serializers.CharField()

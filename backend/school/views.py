@@ -9,6 +9,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status, generics
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Count
+from .serializers import SchoolStatisticsSerializer
 
 User = get_user_model()
 # for paginatint table views
@@ -199,3 +201,39 @@ class StudentListView(APIView):
         serializer = StudentSerializer(students, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+class SchoolStatisticsView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if not hasattr(user, 'profile') or not user.profile.school:
+            return Response({'error': 'School not associated with user'}, status=status.HTTP_400_BAD_REQUEST)
+
+        school = user.profile.school
+
+        # Ensure school is an instance
+        if not isinstance(school, School):
+            return Response({'error': 'Invalid school instance'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        try:
+            total_students = Student.objects.filter(school=school).count()
+            students_list = Student.objects.filter(school=school)
+
+            school_data = {
+                'total_students': total_students,
+                'students_list': StudentSerializer(students_list, many=True).data,
+                'school_name': school.school_name,
+            }
+
+            serializer = SchoolStatisticsSerializer(school_data)
+            return Response(serializer.data)
+
+        except Exception as e:
+            logger.error(f"Error in SchoolStatisticsView: {e}")
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

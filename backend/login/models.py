@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from school.models import School
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import InvalidToken, AuthenticationFailed
 
 User = get_user_model()
 
@@ -15,7 +17,30 @@ class UserProfile(models.Model):
         return f'{self.user.username} - {self.school.school_name}'
 
    
+class CustomJWTAuthentication(JWTAuthentication):
+    def authenticate(self, request):
+        header = self.get_header(request)
+        if header is None:
+            return None
 
+        raw_token = self.get_raw_token(header)
+        if raw_token is None:
+            return None
+
+        validated_token = self.get_validated_token(raw_token)
+
+        try:
+            user_id = validated_token['user_id']
+        except KeyError:
+            raise InvalidToken('Token contained no recognizable user identification')
+
+        try:
+            user = get_user_model().objects.get(id=user_id)
+        except get_user_model().DoesNotExist:
+            raise AuthenticationFailed('User not found', code='user_not_found')
+
+        return (user, validated_token)
+    
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
