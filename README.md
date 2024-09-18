@@ -82,12 +82,6 @@ This project is a School Management System built with a Django REST Framework ba
 ## API Endpoints
 - `/api/login/`: POST request for user authentication
 
-## Contributing
-[Include instructions for how others can contribute to your project]
-
-## License
-[Specify the license under which your project is released]
-
 ## Contact
 [Your Name] - [Your Email]
 
