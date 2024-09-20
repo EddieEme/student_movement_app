@@ -12,27 +12,30 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+
+import dj_database_url
+import environ
+
 import os
-from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
-
+env = environ.Env()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# Use environment variables in your Django settings
-SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = os.getenv('DEBUG') == 'True'
+# Use environment variables in your Django settings'
 
-ALLOWED_HOSTS = []
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env.bool('DEBUG', default=False)
 
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost'])
 
 # Application definition
 
@@ -49,7 +52,7 @@ INSTALLED_APPS = [
     'api',
     'login',
     'school',
-    "corsheaders",
+    'corsheaders',
 ]
 
 # For development (allow all origins):
@@ -63,6 +66,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # If you need to allow credentials (cookies, authorization headers)
 CORS_ALLOW_CREDENTIALS = True
+
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost:5173', 'http://127.0.0.1:5173']
 
@@ -123,7 +127,9 @@ DATABASES = {
     }
 }
 
-
+DATABASES = {
+    'default': dj_database_url.parse(env('DATABASE_URL'))
+}
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

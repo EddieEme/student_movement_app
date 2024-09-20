@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model
 from login.models import UserProfile
 from .models import School, Student, Transfer, Notification
 from rest_framework.views import APIView
@@ -9,8 +9,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status, generics
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
-from django.db.models import Count
+from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import SchoolStatisticsSerializer
+
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 User = get_user_model()
 # for paginatint table views
@@ -24,12 +29,15 @@ class CreateSchoolView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        logger.debug(f"User: {request.user}")
+        if not request.user.is_authenticated:
+            return Response({'error': 'User is not authenticated.'}, status=status.HTTP_403_FORBIDDEN)
+        
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class RegisterStudentView(generics.GenericAPIView):
     serializer_class = StudentSerializer
@@ -203,9 +211,6 @@ class StudentListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-import logging
-
-logger = logging.getLogger(__name__)
 
 class SchoolStatisticsView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
