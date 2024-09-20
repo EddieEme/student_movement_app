@@ -62,7 +62,8 @@ INSTALLED_APPS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://student-movement-app.onrender.com"
+    "https://student-movement-app.onrender.com",
+    "https://eddieeme.github.io"
 ]
 
 # If you need to allow credentials (cookies, authorization headers)
@@ -73,6 +74,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'https://student-movement-app.onrender.com',
+    "https://eddieeme.github.io",
     ]
 
 
@@ -92,8 +94,8 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+     "corsheaders.middleware.CorsMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
