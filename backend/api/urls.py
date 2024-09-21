@@ -1,12 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from login.views import login_view, logout_view, register_view
 from school.views import CreateSchoolView, NotificationView, RegisterStudentView, SchoolStatisticsView, StudentListView, StudentUpdateDeleteView, TransferRequestView, school_list
-# Import other views as needed, e.g.:
-# from school.views import SchoolViewSet, StudentViewSet, TransferViewSet
 
 router = DefaultRouter()
-
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -18,7 +16,11 @@ urlpatterns = [
     path('request-transfer/', TransferRequestView.as_view(), name='request-transfer'),
     path('notifications/', NotificationView.as_view(), name='notifications'),
     path('student/<str:student_id>/', StudentUpdateDeleteView.as_view(), name='student-update-delete'),
-     path('students/', StudentListView.as_view(), name='student-list'),
+    path('students/', StudentListView.as_view(), name='student-list'),
     path('add_student/', RegisterStudentView.as_view(), name='add_student'),
     path('school_statistics/', SchoolStatisticsView.as_view(), name='school_statistics'),
+    
+    # Token authentication URLs
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

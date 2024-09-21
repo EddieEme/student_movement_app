@@ -11,6 +11,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly, IsAu
 from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import SchoolStatisticsSerializer
+from django.views.decorators.csrf import csrf_protect
+
+
 
 import logging
 
@@ -30,6 +33,7 @@ class CreateSchoolView(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         logger.debug(f"User: {request.user}")
+        
         if not request.user.is_authenticated:
             return Response({'error': 'User is not authenticated.'}, status=status.HTTP_403_FORBIDDEN)
         
@@ -37,6 +41,7 @@ class CreateSchoolView(generics.GenericAPIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class RegisterStudentView(generics.GenericAPIView):
