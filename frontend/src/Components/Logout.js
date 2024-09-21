@@ -13,7 +13,7 @@ export const logout = async () => {
     // Remove the token from local storage
     localStorage.removeItem('accessToken');
     // Redirect the user or update the UI as needed
-    window.location.href = '/student_movement_app/home'; // Redirect to login page
+    window.location.href = '/student_movement_app/'; // Redirect to login page
   } catch (error) {
     console.error('Logout failed', error);
   }
