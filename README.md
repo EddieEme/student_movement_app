@@ -28,13 +28,13 @@ This project is a School Management System built with a Django REST Framework ba
 ### Backend Setup
 1. Clone the repository:
    ```
-   git clone []
-   cd [your-project-name]
+   git clone git@github.com:EddieEme/student_movement_app.git
+   cd student_movement_app
    ```
 
 2. Set up a virtual environment:
    ```
-   python -m venv venv
+   python3 -m venv venv
    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
    ```
 
@@ -45,17 +45,17 @@ This project is a School Management System built with a Django REST Framework ba
 
 4. Apply migrations:
    ```
-   python manage.py migrate
+   python3 manage.py migrate
    ```
 
 5. Create a superuser:
    ```
-   python manage.py createsuperuser
+   python3 manage.py createsuperuser
    ```
 
 6. Run the development server:
    ```
-   python manage.py runserver
+   python3 manage.py runserver
    ```
 
 ### Frontend Setup
@@ -66,7 +66,7 @@ This project is a School Management System built with a Django REST Framework ba
 
 2. Install dependencies:
    ```
-   npm install
+   npm install -r requirements.txt
    ```
 
 3. Start the development server:
@@ -81,11 +81,14 @@ This project is a School Management System built with a Django REST Framework ba
 
 ## API Endpoints
 - `/api/login/`: POST request for user authentication
+- 
 
 ## Contact
-[Your Name] - [Your Email]
+Edison Emerenmu - edisonemeremnu@gmail,com
 
-Project Link: [URL to your repository]
+Tasie Ibiam - tasieibiam28@gmail.com
+
+Project Link: https://eddieeme.github.io/student_movement_app/
 
 ## Acknowledgments
 - Django REST Framework
