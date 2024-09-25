@@ -11,10 +11,6 @@ import About from "./Components/About/About"
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute"
 
 
-
-
-
-
 const App = () => {
 
   return (
@@ -27,7 +23,7 @@ const App = () => {
                 <Route element={<ProtectedRoute />}>
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/addstudent" element={<AddStudent />} />
-                    <Route path="/transfer_student" element={<Transfer />} />
+                    <Route path="/transfer" element={<Transfer />} />
                 </Route>
                 {/* Catch-all route for unknown paths */}
                 <Route path="*" element={<Navigate to="/login" replace />} />

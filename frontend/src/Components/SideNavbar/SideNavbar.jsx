@@ -8,6 +8,7 @@ import menu_icon from '../../assets/Images/menu-icon.png'
 import { Link } from 'react-router-dom'
 import Dashboard from '../Dashboard/Dashboard'
 import AddStudent from '../AddStudent/AddStudent'
+import Transfer from '../Transfer/Transfer'
 
 
 const SideNavbar = () => {
@@ -25,7 +26,7 @@ const SideNavbar = () => {
           <ul className={`sidenav-content ${mobileMenu?'show-sidenav' :''}`}>
             <Link to='/dashboard' element={<Dashboard/>} ><span className='icon-box'><img src={dashboard_icon} alt="" className='icons'/><li >Dashboard</li></span></Link>
               <Link to='/addstudent' element={<AddStudent/>}><span className='icon-box'><img src={student_icon} alt="" className='icons'/> <li>Add Student</li></span></Link>
-             <span className='icon-box'><img src={transfer_icon} alt="" className='icons'/><li>Transfer</li></span>
+             <Link to='/transfer' element={<Transfer/>}><span className='icon-box'><img src={transfer_icon} alt="" className='icons'/><li>Transfer</li></span></Link>
               <span className='icon-box'><img src={notification_icon} alt="" className='icons'/><li>Notification</li></span>
           </ul>
           
