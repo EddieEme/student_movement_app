@@ -91,23 +91,28 @@ def school_list(request):
     serializer = SchoolSerializer(schools, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-class TransferRequestView(APIView):
+
+# Handle Transfer request
+class TransferRequestView(generics.GenericAPIView):
+    serializer_class = TransferSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         user_profile = request.user.profile
         user_school = user_profile.school
-
+        
+        
         student_id = request.data.get('student_id')
         to_school_code = request.data.get('to_school_code')
 
-        # Validate input
-        if not student_id or not to_school_code:
-            return Response({'error': 'Student ID and destination school code are required.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Fetch the student and destination school
+        print(f"Student ID: {student_id}, To School Code: {to_school_code}")
+        
+       
         student = Student.objects.filter(student_id=student_id, school=user_school).first()
         to_school = School.objects.filter(school_code=to_school_code).first()
+       
+        if not student_id or not to_school_code:
+            return Response({'error': 'Student ID and destination school code are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         if not student:
             return Response({'error': 'Student not found or not in your school.'}, status=status.HTTP_404_NOT_FOUND)
@@ -128,18 +133,57 @@ class TransferRequestView(APIView):
         serializer = TransferSerializer(data=transfer_data)
 
         if serializer.is_valid():
-            serializer.save()
+            transfer_request = serializer.save()
 
-            # Notify the user/admin of the new transfer request
+            # Notify the current school admin
             Notification.objects.create(
                 user=request.user,  # Notify the requesting user
                 message=f'Transfer request for {student.student_name} from {user_school.school_name} to {to_school.school_name}.',
-                is_read=False
+                is_read=False,
+                transfer_request=transfer_request
             )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ApproveTransferView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, transfer_id):
+        transfer = Transfer.objects.filter(id=transfer_id, status='pending').first()
+
+        if not transfer:
+            return Response({'error': 'Transfer request not found or already processed.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if transfer.to_school != request.user.profile.school:
+            return Response({'error': 'You do not have permission to approve this transfer.'}, status=status.HTTP_403_FORBIDDEN)
+
+        # Approve the transfer
+        transfer.status = 'approved'
+        transfer.save()
+
+        # Update the student's school
+        student = transfer.student
+        student.school = transfer.to_school
+        student.school_code = transfer.to_school.school_code
+        student.save()
+
+        # Notify the student and the original school
+        Notification.objects.create(
+            user=transfer.student.user,  # Notify the student
+            message=f'Transfer approved. {student.student_name} is now moved to {transfer.to_school.school_name}.',
+            is_read=False
+        )
+
+        Notification.objects.create(
+            user=transfer.from_school.admin,  # Notify the original school admin
+            message=f'Transfer approved. {student.student_name} has moved from {transfer.from_school.school_name} to {transfer.to_school.school_name}.',
+            is_read=False
+        )
+
+        return Response({'message': 'Transfer approved and student moved to the new school.'}, status=status.HTTP_200_OK)
 
 
 

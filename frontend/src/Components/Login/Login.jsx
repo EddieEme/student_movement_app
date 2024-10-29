@@ -20,8 +20,6 @@ const Login = () => {
                 { username, password }
             );
 
-            console.log('Login response:', response.data);
-
             const { refresh, access } = response.data;
             if (refresh && access) {
                 localStorage.setItem('refreshToken', refresh);

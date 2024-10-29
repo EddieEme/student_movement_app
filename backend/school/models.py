@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.crypto import get_random_string
 from django.contrib.auth import get_user_model
 
+
 User = get_user_model()
 
 # Create your models here.
@@ -44,57 +45,29 @@ class Student(models.Model):
 
 
 class Transfer(models.Model):
-    STATUS_CHOICES = (
+    STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
-    )
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    from_school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='transfers_from')
-    to_school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='transfers_to')
+    ]
+
+    student = models.ForeignKey('Student', on_delete=models.CASCADE, related_name='transfers')
+    from_school = models.ForeignKey('School', on_delete=models.CASCADE, related_name='transfers_from')
+    to_school = models.ForeignKey('School', on_delete=models.CASCADE, related_name='transfers_to')
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-    request_date = models.DateTimeField(auto_now_add=True)
-    approval_date = models.DateTimeField(null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        if self.status == 'approved' and self.approval_date is None:
-            self.approval_date = timezone.now()
-            self.process_transfer()  # Process the transfer when saving
-        super().save(*args, **kwargs)
-
-    def process_transfer(self):
-        if self.status == 'approved':
-            # Update the student's school to the new school
-            if self.student.school != self.to_school:
-                self.student.school = self.to_school
-                self.student.save()
-
-                # Notify the schools
-                self.notify_schools()
-
-    def notify_schools(self):
-        # Notify the admin of the from_school
-        from_school_admins = User.objects.filter(profile__school=self.from_school)
-        for admin in from_school_admins:
-            Notification.objects.create(
-                user=admin,
-                message=f"Student {self.student.student_name} has been transferred out to {self.to_school.school_name}."
-            )
-
-        # Notify the admin of the to_school
-        to_school_admins = User.objects.filter(profile__school=self.to_school)
-        for admin in to_school_admins:
-            Notification.objects.create(
-                user=admin,
-                message=f"Student {self.student.student_name} has been transferred in from {self.from_school.school_name}."
-            )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Transfer of {self.student} from {self.from_school} to {self.to_school}"
+        return f"Transfer {self.student} from {self.from_school} to {self.to_school} - {self.status}"
     
     
 class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    transfer_request = models.ForeignKey('Transfer', on_delete=models.CASCADE, null=True, blank=True, related_name='notifications')
     message = models.TextField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Notification for {self.user} - {self.message[:20]}"

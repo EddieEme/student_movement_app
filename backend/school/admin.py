@@ -12,5 +12,5 @@ class StudentAdmin(admin.ModelAdmin):
 @admin.register(Transfer)
 class TransferAdmin(admin.ModelAdmin):
     list_display = ('student', 'from_school', 'to_school', 'status')
-    fields = ('student', 'from_school', 'to_school', 'status', 'approval_date')
-    readonly_fields = ('request_date',)
+    fields = ('student', 'from_school', 'to_school', 'status', 'created_at', 'updated_at')
+    readonly_fields = ('created_at','updated_at')

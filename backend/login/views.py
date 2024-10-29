@@ -5,8 +5,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import RefreshToken
 from login.models import UserProfile
-from login.serializers import UserSerializer
 from school.models import School
+from django.db import IntegrityError
+from rest_framework.exceptions import ValidationError
+
 
 
 User = get_user_model()
@@ -74,8 +76,6 @@ def logout_view(request):
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-from django.db import IntegrityError
-from rest_framework.exceptions import ValidationError
 
 @api_view(['POST'])
 @permission_classes([AllowAny])

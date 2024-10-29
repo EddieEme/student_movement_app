@@ -35,6 +35,31 @@ class NotificationSerializer(serializers.ModelSerializer):
         fields = ['user', 'message', 'is_read', 'created_at']
 
 
+
+
+
+class TransferSerializer(serializers.ModelSerializer):
+    student_name = serializers.CharField(source='student.student_name', read_only=True)
+    from_school_name = serializers.CharField(source='from_school.school_name', read_only=True)
+    to_school_name = serializers.CharField(source='to_school.school_name', read_only=True)
+
+    class Meta:
+        model = Transfer
+        fields = ['id', 'student', 'student_name', 'from_school', 'from_school_name', 'to_school', 'to_school_name', 'status', 'created_at', 'updated_at']
+        read_only_fields = ['status', 'created_at', 'updated_at']
+
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    transfer_status = serializers.CharField(source='transfer_request.status', read_only=True, allow_null=True)
+
+    class Meta:
+        model = Notification
+        fields = ['id', 'user', 'message', 'is_read', 'created_at', 'transfer_request', 'transfer_status']
+        read_only_fields = ['user', 'created_at', 'transfer_status']
+
+
+
 class SchoolStatisticsSerializer(serializers.Serializer):
     total_students = serializers.IntegerField()
     students_list = StudentSerializer(many=True)
