@@ -17,16 +17,32 @@ const Login = () => {
         try {
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_LOGIN_ENDPOINT}`,
-                { username, password }
+                { username, password },
+                {
+                    withCredentials: true // Important for receiving cookies
+                }
             );
 
-            const { refresh, access } = response.data;
-            if (refresh && access) {
+            const { refresh, access, user } = response.data;
+
+            if (refresh && access && user) {
+                // Store tokens
                 localStorage.setItem('refreshToken', refresh);
                 localStorage.setItem('accessToken', access);
+                
+                // Store user info
+                localStorage.setItem('userInfo', JSON.stringify({
+                    username: user.username,
+                    schoolName: user.school,
+                    schoolCode: user.school_code
+                }));
+
+                // Configure axios defaults for future requests
+                axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+                
                 navigate('/dashboard');
             } else {
-                setError('Login successful, but authentication tokens are missing');
+                setError('Login successful, but required information is missing');
             }
         } catch (error) {
             console.error('Login error:', error);

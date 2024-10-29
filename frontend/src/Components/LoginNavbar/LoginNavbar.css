@@ -23,6 +23,20 @@
 .login-img > * + * {
     margin-left: 0.5rem;
 }
+
+.school-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin-left: 1rem;
+}
+
+.school-code {
+    font-size: 0.875rem;
+    color: #666;
+    margin-left: 0.5rem;
+} 
+
 .rounded-full{
     width: 80px;
     border-radius: 50%;
@@ -30,7 +44,8 @@
 .user-details{
     display: flex;
     align-items: center;
-     position: relative;
+    position: relative;
+    cursor: pointer;
 }
 .user-image{
     width: 38px;
